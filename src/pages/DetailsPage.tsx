@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import type { AppDispatch, RootState } from "../store/store";
 import { useEffect, useState } from "react";
 import { GetCarById, GetReservationsByCarId, PostReservation } from "../api/api";
 import { Link, useParams } from "react-router-dom";
@@ -25,13 +25,13 @@ import { clearError } from "../store/carStore";
 
 
 export default function DetailsPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { infoData, isLoading, data, error, busyDates } = useSelector(
     (state: RootState) => state.counter
   );
   console.log(infoData);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const [range, setRange] = useState<DateRange | undefined>();
   const [loading, setLoading] = useState(false);
@@ -52,16 +52,13 @@ export default function DetailsPage() {
     if (!range?.from || !range?.to) return;
     setLoading(true);
     try {
-      const result = await dispatch(
+      await dispatch(
         PostReservation({
           carId: Number(id),
           startDate: range.from.toISOString(),
           endDate: range.to.toISOString(),
         })
-      );
-      if (result.error) {
-        return;
-      }
+      ).unwrap()
       handleClose();
       setSuccess(true)
     } finally {
@@ -71,7 +68,7 @@ export default function DetailsPage() {
 
   useEffect(() => {
     if (id) {
-      dispatch(GetCarById(Number(id)))
+      dispatch(GetCarById(Number(id)));
       dispatch(GetReservationsByCarId(Number(id)));
     }
   }, [dispatch, id]);
@@ -205,7 +202,59 @@ export default function DetailsPage() {
           ))}
         </div>
       </div>
-      <Dialog open={open} onClose={handleClose} sx={{ borderRadius: "px" }} > <DialogTitle sx={{ fontWeight: "700", textAlign: "center" }}>Rent this car</DialogTitle> <DialogContent> <DayPicker mode="range" selected={range} onSelect={setRange} fromDate={new Date()} className="rounded-xl" disabled={busyDates} /> {range?.from && range?.to && (<p className="mt-4 text-center text-sm text-gray-600"> Selected:{" "} <b> {range.from.toLocaleDateString()} –{" "} {range.to.toLocaleDateString()} </b> </p>)} </DialogContent> <DialogActions> <Button onClick={handleClose}>Cancel</Button> <Button onClick={handleRent} disabled={!range?.from || !range?.to || loading} variant="contained" > {loading ? "Loading..." : "Rent"} </Button> </DialogActions> </Dialog> <Dialog open={Boolean(error)} onClose={() => { }}> <DialogTitle sx={{ textAlign: "center", fontWeight: 700 }}> Reservation error </DialogTitle> <DialogContent> <p className="text-center text-red-600 font-semibold"> {error} </p> </DialogContent> <DialogActions> <Button onClick={() => dispatch(clearError())} variant="contained" > OK </Button> </DialogActions> </Dialog> <Dialog open={success} onClose={() => setSuccess(false)}> <DialogTitle sx={{ textAlign: "center", fontWeight: 700 }}> Reservation Successful </DialogTitle> <DialogContent> <p className="text-center text-green-600 font-semibold"> Your car has been successfully booked! </p> </DialogContent> <DialogActions> <Button onClick={() => setSuccess(false)} variant="contained"> OK </Button> </DialogActions> </Dialog>
+      <Dialog open={open} onClose={handleClose} sx={{ borderRadius: "px" }} >
+        <DialogTitle sx={{ fontWeight: "700", textAlign: "center" }}>Rent this car
+        </DialogTitle>
+        <DialogContent>
+          <DayPicker mode="range"
+            selected={range}
+            onSelect={setRange}
+            fromDate={new Date()}
+            className="rounded-xl"
+            disabled={busyDates} />
+          {range?.from && range?.to &&
+            (
+              <p className="mt-4 text-center text-sm text-gray-600">
+                Selected:{" "}
+                <b> {range.from.toLocaleDateString()} –{" "} {range.to.toLocaleDateString()}
+                </b> </p>)}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleRent}
+            disabled={!range?.from || !range?.to || loading} variant="contained" >
+            {loading ? "Loading..." : "Rent"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={Boolean(error)}
+        onClose={() => { }}>
+        <DialogTitle sx={{ textAlign: "center", fontWeight: 700 }}>
+          Reservation error
+        </DialogTitle>
+        <DialogContent>
+          <p className="text-center text-red-600 font-semibold"> {error} </p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => dispatch(clearError())} variant="contained" >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={success}
+        onClose={() => setSuccess(false)}>
+        <DialogTitle sx={{ textAlign: "center", fontWeight: 700 }}>
+          Reservation Successful
+        </DialogTitle>
+        <DialogContent>
+          <p className="text-center text-green-600 font-semibold">
+            Your car has been successfully booked! </p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccess(false)} variant="contained">
+            OK </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../store/store";
+import type { AppDispatch, RootState } from "../../../store/store";
 import { useEffect } from "react";
 import { GetTodo } from "../../../api/api";
 import photo from "../../../assets/car.jpg";
@@ -11,7 +11,7 @@ import Skeleton from "@mui/material/Skeleton";
 
 export default function FourthSection() {
   const { data, isLoading } = useSelector((state: RootState) => state.counter);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(GetTodo());

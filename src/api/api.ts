@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosRequest } from "../../utils/axios";
+import type { Car } from "../store/carStore";
 
 export const api = import.meta.env.VITE_URL_CARS;
 
@@ -24,7 +25,7 @@ export const GetTodo = createAsyncThunk("counter/GetTodo", async () => {
   }
 });
 
-export const GetCarById = createAsyncThunk("counter/GetCarById", async (id) => {
+export const GetCarById = createAsyncThunk<Car, number>("counter/GetCarById", async (id: number) => {
   try {
     const { data } = await axiosRequest.get(`${api}/api/cars/${id}`);
     return data;

@@ -10,7 +10,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  const LogIn = async (obj) => {
+  interface AuthPayload {
+    email: string;
+    password: string;
+  }
+
+
+  const LogIn = async (obj: AuthPayload) => {
     try {
       setLoading(true);
       setAuthError("");
@@ -82,11 +88,10 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             className={`w-full mt-6 py-3 rounded-lg font-medium transition
-    ${
-      loading
-        ? "bg-blue-300 cursor-not-allowed"
-        : "bg-blue-500 hover:bg-blue-600 cursor-pointer text-white"
-    }`}
+    ${loading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 cursor-pointer text-white"
+              }`}
           >
             {loading ? "Loading..." : "Log In"}
           </button>

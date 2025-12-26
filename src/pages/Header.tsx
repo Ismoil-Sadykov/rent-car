@@ -76,7 +76,7 @@ export default function Header() {
             <List>
               {menuItems.map((item) => (
                 <ListItem
-                  button
+                  component="button"
                   key={item.label}
                   onClick={() => setOpen(false)}
                 >

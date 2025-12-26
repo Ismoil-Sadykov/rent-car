@@ -12,13 +12,13 @@ import log3 from "../../../assets/002-pickup.png";
 import log4 from "../../../assets/012-suv.png";
 import log5 from "../../../assets/034-minivan.png";
 import Button from "@mui/material/Button";
-import type { RootState } from "../../../store/store";
+import type { AppDispatch, RootState } from "../../../store/store";
 import CircularProgress from "@mui/material/CircularProgress";
 import logos from "../../../assets/Logos.png";
 
 export default function FirstSection() {
   const { data, isLoading } = useSelector((state: RootState) => state.counter);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(GetTodo());

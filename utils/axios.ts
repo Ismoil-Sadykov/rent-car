@@ -1,7 +1,7 @@
 import axios from "axios";
 import { api } from "./../src/api/api";
 
-export const SaveToken = (token) => {
+export const SaveToken = (token: string) => {
   localStorage.setItem("authToken", token);
 };
 

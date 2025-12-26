@@ -6,14 +6,28 @@ import {
   PostReservation,
 } from "../api/api";
 
+export interface Car {
+  id: number;
+  title: string;
+  description: string;
+  pricePerHour: number;
+}
 export interface CounterState {
-  data: [];
-  infoData: null;
+  data: Car[];
+  infoData: Car | null;
   isLoading: boolean;
   error: string | null;
-  reservations: [];
-  busyDates: [];
+  reservations: Reservation[];
+  busyDates: Date[];
 }
+
+export interface Reservation {
+  id: number;
+  carId: number;
+  startDate: string;
+  endDate: string;
+}
+
 const initialState: CounterState = {
   data: [],
   infoData: null,

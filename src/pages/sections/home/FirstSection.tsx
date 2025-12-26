@@ -5,13 +5,13 @@ import Typography from "@mui/material/Typography";
 import car from "../../../assets/Imgs.png";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../store/store";
+import type { AppDispatch, RootState } from "../../../store/store";
 import { useEffect } from "react";
 import { GetTodo } from "../../../api/api";
 
 export default function FirstSection() {
   const { data } = useSelector((state: RootState) => state.counter)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const fieldStyle = {
     backgroundColor: "#F7F7F7",
