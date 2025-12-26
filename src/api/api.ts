@@ -3,11 +3,23 @@ import { axiosRequest } from "../../utils/axios";
 
 export const api = import.meta.env.VITE_URL_CARS;
 
+interface ReservationPayload {
+  carId: number;
+  startDate: string;
+  endDate: string;
+}
+
+interface Reservation {
+  carId: number;
+  startDate: string;
+  endDate: string;
+}
+
 export const GetTodo = createAsyncThunk("counter/GetTodo", async () => {
   try {
     const { data } = await axiosRequest.get(`${api}/api/cars`);
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   }
 });
@@ -16,12 +28,16 @@ export const GetCarById = createAsyncThunk("counter/GetCarById", async (id) => {
   try {
     const { data } = await axiosRequest.get(`${api}/api/cars/${id}`);
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   }
 });
 
-export const PostReservation = createAsyncThunk(
+export const PostReservation = createAsyncThunk<
+  boolean,
+  ReservationPayload,
+  { rejectValue: string }
+>(
   "reservation/post",
   async ({ carId, startDate, endDate }, { rejectWithValue, dispatch }) => {
     try {
@@ -30,9 +46,9 @@ export const PostReservation = createAsyncThunk(
         startDate,
         endDate,
       });
-      dispatch(GetReservationsByCarId(carId))
+      dispatch(GetReservationsByCarId(carId));
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.response?.status === 409) {
         return rejectWithValue("These dates are already reserved");
       }
@@ -41,15 +57,16 @@ export const PostReservation = createAsyncThunk(
   }
 );
 
-export const GetReservationsByCarId = createAsyncThunk(
-  "reservation/getByCarId",
-  async (carId: number, { rejectWithValue }) => {
-    try {
-      const { data } = await axiosRequest.get("/api/reservations");
-      const carReservations = data.filter((res) => res.carId === carId);
-      return carReservations;
-    } catch (error) {
-      return rejectWithValue("Failed to load reservations");
-    }
+export const GetReservationsByCarId = createAsyncThunk<
+  Reservation[],
+  number,
+  { rejectValue: string }
+>("reservation/getByCarId", async (carId: number, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosRequest.get<Reservation[]>("/api/reservations");
+    const carReservations = data.filter((res) => res.carId === carId);
+    return carReservations;
+  } catch (error: any) {
+    return rejectWithValue("Failed to load reservations");
   }
-);
+});
