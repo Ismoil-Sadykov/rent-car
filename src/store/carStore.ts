@@ -33,7 +33,7 @@ const initialState: CounterState = {
   infoData: null,
   isLoading: false,
   error: null,
-  reservations: [],
+  reservations: [] as Reservation[],
   busyDates: [],
 };
 
@@ -74,7 +74,7 @@ export const counterSlice = createSlice({
         state.error = null;
       });
     builder.addCase(GetReservationsByCarId.fulfilled, (state, action) => {
-      state.reservations = action.payload;
+      state.reservations = action.payload as Reservation[];
       const dates: Date[] = [];
       action.payload.forEach((res) => {
         const start = new Date(res.startDate);

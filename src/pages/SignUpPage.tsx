@@ -9,7 +9,13 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const SignUp = async (obj) => {
+  interface SignUpData {
+    email: string;
+    password: string;
+    name?: string;
+  }
+
+  const SignUp = async (obj: SignUpData) => {
     try {
       setLoading(true);
       await axiosRequest.post("/api/auth/register", obj);
